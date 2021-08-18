@@ -1,0 +1,17 @@
+{
+  "name": "create-react-dapp-web3js",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "colors": "^1.4.0",
+    "fs-extra": "^10.0.0",
+    "inquirer": "^8.1.2",
+    "lodash": "^4.17.21",
+    "ora": "^5.4.1",
+    "shelljs": "^0.8.4"
+  },
+  "bin": {
+    "": "./index.ts"
+  }
+}
