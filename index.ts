@@ -1,9 +1,9 @@
 #!/usr/bin/env node
-const inquirer = require('inquirer')
-const colors = require('colors')
+const inq = require('inquirer')
+const color = require('colors')
 const reactApp = require('./react/reactApp');
 
-const askQuestions = () => {
+const askQuestion = (): any => {
     const questions = [
         {
             type: 'input',
@@ -11,14 +11,14 @@ const askQuestions = () => {
             message: 'What would you like to name your app? The name should be in kebab case i.e `my-awesome-app`?'
         },
     ];
-    return inquirer.prompt(questions)
+    return inq.prompt(questions)
 };
 
 const appDict = {
     react: reactApp
 };
 
-const checkKebab = (str) => {
+const checkKebab = (str: string): string => {
     str &&
     str
         .match(/[A-Z]{2,}(?=[A-Z][a-z]+[0-9]*|\b)|[A-Z]?[a-z]+[0-9]*|[A-Z]|[0-9]+/g)
@@ -27,8 +27,8 @@ const checkKebab = (str) => {
     return str;
 }
 
-const run = async () => {
-    const answer = await askQuestions();
+const execute = async (): Promise<any> => {
+    const answer = await askQuestion();
     const { appName } = answer;
     const appType = 'react'; // Temp
     let kebabName;
@@ -38,14 +38,14 @@ const run = async () => {
     }
 
     if(!kebabName || kebabName.length <= 0) {
-        console.log(colors.red('Please enter a valid name for your new app!'))
+        console.log(color.red('Please enter a valid name for your new app!'))
         return process.exit(0);
     }
 
     const app = appDict[appType];
 
     if(!app) {
-        console.log(colors.red(
+        console.log(color.red(
             `App type: ${appType} is not yet supported by this CLI tool.`
         ))
         return process.exit(0);
@@ -55,10 +55,10 @@ const run = async () => {
     const res = await app.create(kebabName, appDirectory);
 
     if(!res) {
-        console.log(colors.red('There was an error generating your app!'))
+        console.log(color.red('There was an error generating your app!'))
         return process.exit(0)
     }
     return process.exit(0)
 }
 
-run();
+execute();

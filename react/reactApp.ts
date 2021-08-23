@@ -1,13 +1,14 @@
-import 'colors'
-import * as shell from 'shelljs'
+var colors = require('colors')
+const shell = require('shelljs')
 shell.config.silent = true;
-import * as inquirer from 'inquirer'
-import * as fse from 'fs-extra';
+const inquirer = require('inquirer')
+const fse = require('fs-extra')
+const set = require('lodash.set')
+const ora = require('ora')
 const reactConfigList = require('./config')
-import { set } from 'lodash'
-import * as ora from 'ora';
 
-const askQuestions = async (): Promise<string[]> => {
+
+const askQuestions = async () => {
     const selectedConfigList = [];
     const questions = reactConfigList.map(config => ({
         type: 'list',
@@ -27,7 +28,7 @@ const askQuestions = async (): Promise<string[]> => {
     return selectedConfigList;
 }
 
-const createReactApp = (appName: string) => {
+const createReactApp = (appName: string): Promise<any> => {
     const spinner = ora('Running create-react-app....').start();
 
     return new Promise((resolve, reject) => {
@@ -36,7 +37,7 @@ const createReactApp = (appName: string) => {
             () => {
                 const cdRes = shell.cd(appName);
                 if(cdRes.code !== 0) {
-                    console.log(`Error changing directory to: ${appName}`.red);
+                    console.log(colors.red(`Error changing directory to: ${appName}`));
                     reject();
                 }
                 spinner.succeed();
@@ -46,7 +47,7 @@ const createReactApp = (appName: string) => {
     })
 }
 
-const installPackages = async (configList: any) => {
+const installPackages = async (configList: Array<any>): Promise<any> => {
     let dependencies = [];
     let devDependencies = [];
 
@@ -73,7 +74,7 @@ const installPackages = async (configList: any) => {
     })
 }
 
-const updatePackageDotJson = (configList: any) => {
+const updatePackageDotJson = (configList: Array<any>): Promise<any> => {
     const spinner = ora('Updating package.json scripts...');
 
     let packageEntries = configList.reduce(
@@ -103,7 +104,29 @@ const updatePackageDotJson = (configList: any) => {
     })
 }
 
-const addTemplates = (configList: any) => {
+const addDirs = (configList: Array<any>): Promise<any> => {
+    const spinner = ora('Adding additional directories...')
+
+    const dirList = configList.reduce(
+        (acc, val) => [...acc, ...val.directories],
+        []
+    )
+
+    return new Promise(resolve => {
+        dirList.forEach(dir => {
+            fse.ensureDir(dir.path, err => {
+                if(err) {
+                    console.log(err)
+                }
+            })
+        })
+
+        spinner.succeed();
+        resolve('success');
+    })
+}
+
+const addTemplates = (configList: Array<any>): Promise<any> => {
     const spinner = ora('Adding templates...');
 
     const templateList = configList.reduce(
@@ -125,7 +148,7 @@ const addTemplates = (configList: any) => {
     })
 }
 
-const commitGit = () => {
+const commitGit = ():Promise<any> => {
     const spinner = ora('Committing new files to Git....');
 
     return new Promise(resolve => {
@@ -139,17 +162,18 @@ const commitGit = () => {
     })
 }
 
-exports.create = async (appName, appDirectory): Promise<boolean> =>{
+exports.create = async (appName, appDirectory) =>{
     const selectedConfigList = await askQuestions();
 
     await createReactApp(appName);
     await installPackages(selectedConfigList);
     await updatePackageDotJson(selectedConfigList);
+    await addDirs(selectedConfigList)
     await addTemplates(selectedConfigList);
     await commitGit();
 
     console.log(
-        `Created your new dApp! To get started cd into ${appName}`.green
+        colors.green(`Created your new dApp! To get started cd into ${appName}`)
     )
     return true
 }

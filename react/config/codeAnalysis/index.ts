@@ -1,3 +1,5 @@
+const eslint = require('./templates/eslint');
+const prettier = require('./templates/prettier')
 module.exports = {
     name: 'withLint',
     question: 'Do you want to include code analysis (TSLint, Prettier and EsLint)?',
@@ -75,5 +77,9 @@ module.exports = {
             ]
         }
     ],
-    templates: []
+    templates: [
+        {path: '.prettierrc', file: prettier},
+        {path: '.eslintrc.js', file: eslint}
+    ],
+    directories: []
 }

@@ -13,5 +13,6 @@ module.exports = {
             value: "typechain --target ethers-v5 src/types \"src/lib/abis/*.json\""
         }
     ],
-    templates: []
+    templates: [],
+    directories: []
 }
