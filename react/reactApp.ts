@@ -34,7 +34,7 @@ const createAppDirectory = (appDirectory: string): Promise<any> => {
     return new Promise((resolve, reject) => {
         fse.ensureDir(appDirectory, err => {
             if(err) {
-                console.log(err)
+                console.log(colors.blue("Error with fse.ensureDir"))
             }
         })
         const cdRes = shell.cd(appDirectory);
@@ -54,7 +54,7 @@ const createReactApp = (appName: string): Promise<any> => {
         shell.exec(
             `npx create-react-app ${appName}-frontend --template typescript`,
             () => {
-                const cdRes = shell.cd(appName);
+                const cdRes = shell.cd(`${appName}-frontend`);
                 if(cdRes.code !== 0) {
                     console.log(colors.red(`Error changing directory to: ${appName}`));
                     reject();
