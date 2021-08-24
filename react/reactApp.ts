@@ -28,12 +28,31 @@ const askQuestions = async () => {
     return selectedConfigList;
 }
 
+const createAppDirectory = (appDirectory: string): Promise<any> => {
+    const spinner = ora('Creating app directory...').start();
+
+    return new Promise((resolve, reject) => {
+        fse.ensureDir(appDirectory, err => {
+            if(err) {
+                console.log(err)
+            }
+        })
+        const cdRes = shell.cd(appDirectory);
+        if(cdRes.code !== 0) {
+            console.log(colors.red(`Error changing directory to: ${appDirectory}`))
+            reject();
+        }
+        spinner.succeed();
+        resolve('Success')
+    })
+}
+
 const createReactApp = (appName: string): Promise<any> => {
     const spinner = ora('Running create-react-app....').start();
 
     return new Promise((resolve, reject) => {
         shell.exec(
-            `npx create-react-app ${appName} --template typescript`,
+            `npx create-react-app ${appName}-frontend --template typescript`,
             () => {
                 const cdRes = shell.cd(appName);
                 if(cdRes.code !== 0) {
@@ -165,6 +184,7 @@ const commitGit = ():Promise<any> => {
 exports.create = async (appName, appDirectory) =>{
     const selectedConfigList = await askQuestions();
 
+    await createAppDirectory(appDirectory);
     await createReactApp(appName);
     await installPackages(selectedConfigList);
     await updatePackageDotJson(selectedConfigList);
