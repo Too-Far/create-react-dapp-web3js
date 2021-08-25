@@ -18,6 +18,7 @@ const askQuestion = (): any => {
             choices: ['yes', 'no']
         }
     ];
+    
     return inq.prompt(questions)
 };
 
@@ -36,7 +37,7 @@ const checkKebab = (str: string): string => {
 }
 
 const createHardhatDir = async(appName: string): Promise<any> => {
-    const hardhatDir = `${process.cwd()}/${appName}/hardhat`;
+    const hardhatDir = `/${appName}/hardhat`;
     const app = appDict['hardhat'];
     const res = await app.create('hardhat', hardhatDir)
     if(!res) {
@@ -48,7 +49,7 @@ const createHardhatDir = async(appName: string): Promise<any> => {
 
 const execute = async (): Promise<any> => {
     const answer = await askQuestion();
-    const { appName, hardhat } = answer;
+    const { appName, hardhatApp } = answer;
     const appType = 'react'; // Temp
     let kebabName;
 
@@ -78,13 +79,15 @@ const execute = async (): Promise<any> => {
         return process.exit(0)
     }
 
-    if (hardhat === 'yes') {
+    if (hardhatApp === 'yes') {
         /**
          * By the time the program gets here it is cd'd into the react app. Need to redirect to
          * outer directory, then create hardhat and cd into it to move forward
          * !Currently not triggering hardhat build!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
          */
-        await createHardhatDir(kebabName);
+        console.log(kebabName)
+        console.log(appDirectory)
+        await createHardhatDir(appDirectory);
     }
     return process.exit(0)
 }

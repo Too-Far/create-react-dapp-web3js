@@ -42,6 +42,11 @@ const createAppDirectory = (appDirectory: string): Promise<any> => {
             console.log(colors.red(`Error changing directory to: ${appDirectory}`))
             reject();
         }
+        fse.ensureDir(`${appDirectory}/hardhat`, err=> {
+            if(err) {
+                console.log(colors.blue('Error with fse.endureDir for hardhat directory'))
+            }
+        })
         spinner.succeed();
         resolve('Success')
     })
@@ -192,8 +197,7 @@ exports.create = async (appName, appDirectory) =>{
     await addTemplates(selectedConfigList);
     await commitGit();
 
-    console.log(
-        colors.green(`Created your new dApp! To get started cd into ${appName}`)
-    )
+    console.log(colors.green(`Your dAPP has been created! To get started, cd into ${appName} and get started!`))
+    
     return true
 }

@@ -7,18 +7,18 @@ const _set = require('lodash.set');
 const _ora = require('ora');
 const hardhatConfigList = require('./config')
 
-const createHardhatDirectory = (appDirectory: string): Promise<any> => {
+const createHardhatDirectory = (appDir: string): Promise<any> => {
     const spinner = _ora('Creating Hardhat directory').start();
 
     return new Promise((resolve, reject) => {
-        fsextra.ensureDir(appDirectory, err => {
+        fsextra.ensureDir(`/${appDir}/hardhat`, err => {
             if(err) {
                 console.log(colors.red(err));
             }
         })
-        const cdResult = bash.cd(appDirectory);
+        const cdResult = bash.cd(`${appDir}/hardhat`);
         if(cdResult.code !== 0) {
-            console.log(colors.red(`Error changing directory to: ${appDirectory}`));
+            console.log(colors.red(`Error changing directory to: ${appDir}`));
             reject();
         }
         spinner.succeed();
@@ -71,7 +71,7 @@ const gitCommit = ():Promise<any> => {
     const spinner = _ora('Committing new files to Git....').start();
 
     return new Promise(resolve => {
-        shell.exec(
+        bash.exec(
             `git add . && git commit --no-verify -m "Secondary commit from hardhat install"`,
             ()=> {
                 spinner.succeed();
