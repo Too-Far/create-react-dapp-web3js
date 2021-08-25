@@ -19,7 +19,7 @@ I felt that it was high time for a simple wrapper that would prevent the need to
 Installation
 ------------
 
-    npm install <TBD>
+    npm install create-react-dapp-web3js
 
 Usage
 _____

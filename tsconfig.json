@@ -1,6 +1,6 @@
 {
     "compilerOptions": {
-        "outDir": "./built",
+        "outDir": "./dist",
         "allowJs": true,
         "target": "es6",
         "declaration": true
@@ -9,6 +9,7 @@
     //     "./src/**/*"
     // ],
     "exclude": [
-        "node_modules"
+        "node_modules",
+        "dist"
     ]
 }
